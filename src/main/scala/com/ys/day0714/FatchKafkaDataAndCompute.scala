@@ -13,13 +13,13 @@ object FetchKafkaDataAndCompute {
     val ssc=new StreamingContext(conf,Seconds(10))
     val km=Map(
     "bootstrap.servers"-> "localhost:9092",
-      "enable.auto.commit" -> "all",
-    "retries"->0,
-    "batch.size"->16384,
-    "linger.ms"-> 1,
-    "buffer.memory"-> 33554432,
-    "key.serializer"-> "org.apache.kafka.common.serialization.StringSerializer",
-    "value.serializer"-> "org.apache.kafka.common.serialization.StringSerializer"
+      "group.id"->"test",
+      "enable.auto.commit" -> "true",
+      "auto.commit.interval.ms"-> "1000",
+      "session.timeout.ms"-> "30000",
+      "session.timeout.ms"->"30000",
+      "key.deserializer"-> "org.apache.kafka.common.serialization.StringDeserializer",
+    "value.deserializer"->"org.apache.kafka.common.serialization.StringDeserializer"
     )
     /*
     Properties props = new Properties();
