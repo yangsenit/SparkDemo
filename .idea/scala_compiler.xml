@@ -3,7 +3,7 @@
   <component name="ScalaCompilerConfiguration">
     <profile name="Maven 1" modules="SparkDemo">
       <parameters>
-        <parameter value="-target:jvm-1.7" />
+        <parameter value="-target:jvm-1.8" />
       </parameters>
     </profile>
   </component>

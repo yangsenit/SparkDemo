@@ -1,0 +1,105 @@
+package Spark.class98;
+
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.util.hash.Hash;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+import java.util.Random;
+
+/**
+ * Created by Administrator on 2016/7/12 0012.
+ */
+//专门负责向kafka中发送数据
+public class SendMessageToKafka  {
+public static void main(String [] args){
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("acks", "all");
+        props.put("retries", 0);
+        props.put("batch.size", 16384);
+        props.put("linger.ms", 1);
+        props.put("buffer.memory", 33554432);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String, String> producer = new KafkaProducer<String, String>(props);
+while(true) {
+            String key = java.util.UUID.randomUUID().toString();//获得唯一表示作为key
+String value = new CreateLog1().create();
+            producer.send(new ProducerRecord<String, String>("my-topic",key,value));
+        }
+    }
+}
+//专门负责产生数据
+/*
+数据的格式如下：
+data：日期，格式为 yyyy-MM-dd
+timeStamp：时间戳
+userId：用户ID
+pageID:页面ID
+chanelID：板块的ID
+action：点击和注册
+
+每一条记录是作为<k,v>中的value 因为kafka中的数据是以<K，V>的格式存储的
+
+ */
+class CreateLog implements Runnable{
+public static String [] channels={"hadoop","spark","flume","kafka","impala","HBase","ML"};
+public static String [] actions={"view","register"};
+private String data;
+private String timeStamp;
+private String userID;
+private String pageID;
+private String channelID;
+private String action;
+private String userLog;
+public String getUserLog() {
+return userLog;
+    }
+public void run() {
+while(true){
+data=new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+timeStamp=String.valueOf(new Date().getTime());
+userID=String.valueOf(new Random().nextInt(100000));
+pageID=String.valueOf(new Random().nextInt(20));
+channelID=channels[new Random().nextInt(channels.length)];
+action=actions[new Random().nextInt(actions.length)];
+userLog=data+"\t"+
+timeStamp+"\t"+
+userID+"\t"+
+pageID+"\t"+
+channelID+"\t"+
+action+"\t";
+//System.out.println(userLog);
+}
+    }
+}
+class CreateLog1 {
+public static String [] channels={"hadoop","spark","flume","kafka","impala","HBase","ML"};
+public static String [] actions={"view","register"};
+public String create() {
+            String data=new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            String timeStamp=String.valueOf(new Date().getTime());
+            String userID=String.valueOf(new Random().nextInt(100000));
+            String  pageID=String.valueOf(new Random().nextInt(20));
+            String channelID=channels[new Random().nextInt(channels.length)];
+            String action=actions[new Random().nextInt(actions.length)];
+            String userLog=data+"\t"+
+                    timeStamp+"\t"+
+                    userID+"\t"+
+                    pageID+"\t"+
+                    channelID+"\t"+
+                    action+"\t";
+            System.out.println(userLog);
+return userLog;
+    }
+}
+
+
+
+
