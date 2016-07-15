@@ -1,4 +1,4 @@
-package com.ys.day0714
+package com.ys.day0715
 
 import kafka.serializer.StringDecoder
 import org.apache.spark.SparkConf
@@ -16,6 +16,7 @@ object FetchKafkaDataAndCompute {
     val conf = new SparkConf().setAppName("FetchKafkaDataAndCompute").setMaster("local[*]")
     val ssc = new StreamingContext(conf, Seconds(10))
     ssc.checkpoint("/home/ys/checkpoint/kafka")
+
     val kafkaParameters=Map("metadata.broker.list"->"master1:9092,slave1:9092,slave2:9092")
     val topic =Set[String]("my-topic")
     //只想说一点的是  这里的泛型必须加上 ，必须加上，要不根本就没有法子去解析，kafka中的数据是什么类型，给了一StringDecoder的方式去 解析获得key和value
@@ -23,19 +24,14 @@ object FetchKafkaDataAndCompute {
     // 解析的时候 key用String的方式解析 value用String的方式解析
     //泛型的一定不能掉
     val lines= KafkaUtils.createDirectStream[String,String,StringDecoder, StringDecoder](ssc,kafkaParameters,topic).map(_._2)
-    /*
-    2016-07-15	1468568388149	17446	9	kafka	view
-    2016-07-15	1468568388650	91543	12	HBase	register
-    2016-07-15	1468568389151	81086	18	hadoop	view
-    2016-07-15	1468568389652	85759	11	spark	view
-    2016-07-15	1468568390154	62068	0	ML	view
-    2016-07-15	1468568390655	56396	14	impala	view
-     */
-    //这样的数据类型
-    //1，获得数据
-    //2，我们想用sparkSql 操作
+//    val lines1=lines.transform(rdds=>rdds.map(x=>x._2.toString))
+//    val words=lines1.transform(rdds=>rdds.flatMap(_.split("\t")))
+    //val words = lines.map(_.2).flatMap{_.split(" ")}
 
-
+    val words=lines.flatMap(_.split("\t"))
+    val pairs = words.map((_,1))
+    val wordsCount = pairs.reduceByKey(_+_)
+    wordsCount.print()
     ssc.start()
     ssc.awaitTermination()
 

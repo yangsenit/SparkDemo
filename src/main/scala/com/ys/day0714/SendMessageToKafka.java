@@ -21,6 +21,12 @@ public class SendMessageToKafka {
         这是编写kafka java程序的例子
         ys@master1:~/installed_soft/kafka_2.10-0.10.0.0/bin$ ./kafka-topics.sh --create --zookeeper master1:2181,slave1:2181,slave2:2181 --replication-factor 1 --partitions 1 --topic my-topic
         我们创建了 my-topic
+
+        kafka中的 producer topic consumer  多个topic可以是属于一个组group组
+        producer 通过kafka的配置 创建producer  通过send的方法 发送消息到 topic中
+        topic 是要自己通过 kafka的命令行提前 创建好的
+        consumer 通过kafka的配置文件 创建consumer
+
          */
         Properties props = new Properties();
         props.put("bootstrap.servers", "master1:9092,slave1:9092,slave2:9092");
