@@ -10,7 +10,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 /**
   * Created by ys on 16-7-14.
   */
-object FetchKafkaDataAndCompute {
+object FetchKafkaDataAndCompute1 {
   def main(args: Array[String]) {
     // args 是个数组，数组中的每一个元素都是 String
     val conf = new SparkConf().setAppName("FetchKafkaDataAndCompute").setMaster("local[*]")
