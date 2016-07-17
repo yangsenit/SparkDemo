@@ -4,15 +4,15 @@
 
 package com.ys.day0716
 
-import java.sql.{Connection, DriverManager, PreparedStatement, Statement}
+import java.sql.PreparedStatement
 
+import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   * Created by ys on 16-7-16.
   */
-object AccumulatorAndBroadcastDemo1 {
+object StreamingInsertToMysql {
   def main(args: Array[String]) {
     val conf =new SparkConf().setMaster("local[*]").setAppName("AccumulatorAndBroadcastDemo")
     val ssc=new StreamingContext(conf,Seconds(10))
@@ -48,13 +48,4 @@ object AccumulatorAndBroadcastDemo1 {
     ssc.awaitTermination()
   }
 }
-class Connec2Mysql{
-  def connec (): Connection={
-    Class.forName("com.mysql.jdbc.Driver")
-    val url="jdbc:mysql://localhost:3306/ys"
-    val user="root"
-    val password=""
-    val con = DriverManager.getConnection(url,user,password)
-    con
-  }
-}
+
